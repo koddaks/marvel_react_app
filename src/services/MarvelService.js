@@ -1,0 +1,42 @@
+import md5 from 'blueimp-md5';
+
+class MarvelService {
+  _apiBase = 'https://gateway.marvel.com:443/v1/public/';
+  _apiKey = '6a44f7c28766c03b37de408a7d605f26';
+
+  getHash = (timeStamp, apikey) => {
+    return md5(
+      timeStamp + '2154bb8e0e7d81078f146c75e0f51bb433c116b3' + apikey
+    );
+  };
+
+  getResource = async (url) => {
+    let res = await fetch(url);
+
+    if (!res.ok) {
+      throw new Error(`Could not fetch ${url}, status: ${res.status}`);
+    }
+
+    return await res.json();
+  };
+
+  getAllCharacters = () => {
+    const limit = 9;
+    const offset = 210;
+    const timeStamp = +new Date();
+    const hash = this.getHash(timeStamp, this._apiKey);
+    return this.getResource(
+      `${this._apiBase}characters?limit=${limit}&offset=${offset}?&ts=${timeStamp}&apikey=${this._apiKey}&hash=${hash}`
+    );
+  };
+
+  getCharacter = (id) => {
+    const timeStamp = +new Date();
+    const hash = this.getHash(timeStamp, this._apiKey);
+    return this.getResource(
+      `${this._apiBase}characters/${id}?&ts=${timeStamp}&apikey=${this._apiKey}&hash=${hash}`
+    );
+  };
+}
+
+export default MarvelService;
