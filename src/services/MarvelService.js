@@ -20,23 +20,36 @@ class MarvelService {
     return await res.json();
   };
 
-  getAllCharacters = () => {
+  getAllCharacters = async () => {
     const limit = 9;
     const offset = 210;
     const timeStamp = +new Date();
     const hash = this.getHash(timeStamp, this._apiKey);
-    return this.getResource(
+    const res = await this.getResource(
       `${this._apiBase}characters?limit=${limit}&offset=${offset}?&ts=${timeStamp}&apikey=${this._apiKey}&hash=${hash}`
     );
+    return res.data.results.map(this._transformCharacter);
   };
 
-  getCharacter = (id) => {
+  getCharacter = async (id) => {
     const timeStamp = +new Date();
     const hash = this.getHash(timeStamp, this._apiKey);
-    return this.getResource(
+    const res = await this.getResource(
       `${this._apiBase}characters/${id}?&ts=${timeStamp}&apikey=${this._apiKey}&hash=${hash}`
     );
+    return this._transformCharacter(res.data.results[0])
   };
+
+  _transformCharacter = (char) => {
+    const descr = char.description.length === 0 ? 'there is no description' : char.description.length > 190 ? char.description.slice(0,190) + '...' : char.description;
+    return {
+      name: char.name,
+      descripion: descr,
+      thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
+      homepage: char.urls[0].url,
+      wiki: char.urls[1].url
+    }   
+  }
 }
 
 export default MarvelService;
