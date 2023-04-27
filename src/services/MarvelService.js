@@ -3,6 +3,8 @@ import md5 from 'blueimp-md5';
 class MarvelService {
   _apiBase = 'https://gateway.marvel.com:443/v1/public/';
   _apiKey = '6a44f7c28766c03b37de408a7d605f26';
+  _baseOffset = 210
+  _baseLimit = 9
 
   getHash = (timeStamp, apikey) => {
     return md5(
@@ -20,9 +22,7 @@ class MarvelService {
     return await res.json();
   };
 
-  getAllCharacters = async () => {
-    const limit = 9;
-    const offset = 210;
+  getAllCharacters = async (offset = this._baseOffset, limit = this._baseLimit) => {
     const timeStamp = +new Date();
     const hash = this.getHash(timeStamp, this._apiKey);
     const res = await this.getResource(
