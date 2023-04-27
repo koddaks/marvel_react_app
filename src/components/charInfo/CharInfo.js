@@ -5,7 +5,7 @@ import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton'
 
 import './charInfo.scss';
-// import thor from '../../resources/img/thor.jpeg';
+
 
 class CharInfo extends Component {
 
@@ -29,6 +29,8 @@ class CharInfo extends Component {
         }
     }
 
+   
+
     updateChar = () => {
         const {charId} = this.props;
         if (!charId) {
@@ -40,6 +42,8 @@ class CharInfo extends Component {
         .getCharacter(charId)
         .then(this.onCharLoaded)
         .catch(this.onError)
+
+    this.foo.bar = 0
     }
 
     onCharLoaded = (char) => {
@@ -83,11 +87,17 @@ class CharInfo extends Component {
 }
 
 const View = ({char}) => {
-    const {name , descripion, thumbnail, homepage, wiki, comics} = char
+    const {name , descripion, thumbnail, homepage, wiki, comics} = char;
+
+    let imgStyle = {'objectFit' : 'cover'};
+    if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+        imgStyle = {'objectFit' : 'contain'};
+    }
+
     return (
         <>
         <div className="char__basics">
-                    <img src={thumbnail} alt={name}/>
+                    <img src={thumbnail} alt={name} style={imgStyle}/>
                     <div>
                         <div className="char__info-name">{name}</div>
                         <div className="char__btns">
