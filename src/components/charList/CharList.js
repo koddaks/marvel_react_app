@@ -58,8 +58,20 @@ class CharList extends Component  {
         })
     }
 
+    itemRefs = [];
+
+    setRef = (ref) => {
+        this.itemRefs.push(ref);
+    }
+
+    focusOnItem = (id) => {       
+        this.itemRefs.forEach(item => item.classList.remove('char__item_selected'));
+        this.itemRefs[id].classList.add('char__item_selected');
+        this.itemRefs[id].focus();
+    }
+
     CreateCharListItems = (charList) => {
-        const elements = charList.map(item => {
+        const elements = charList.map((item, i) => {
             const {id, name, thumbnail} = item;
     
             let imgStyle = {'objectFit' : 'cover'};
@@ -70,7 +82,19 @@ class CharList extends Component  {
             return (
                 <li key={id}
                     className="char__item"
-                    onClick={() => this.props.onCharSelected(id)}>
+                    tabIndex={0}
+                    ref={this.setRef}
+                    onClick={() => {
+                        this.props.onCharSelected(id)
+                        this.focusOnItem(i)
+                    }}
+                    onKeyPress={(e) => {
+                        if (e.key === ' ' || e.key === "Enter") {
+                            this.props.onCharSelected(id);
+                            this.focusOnItem(i);
+                        }
+                    }}
+                    >
                     <img style={imgStyle} src={thumbnail} alt={name}/>
                     <div className="char__name">{name}</div>
                 </li>
